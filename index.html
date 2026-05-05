@@ -125,4 +125,171 @@
   </section>
 
   <section class="categories" id="categories">
-    <div class
+    <div class="container">
+      <h2 class="section-title">Explore Categories</h2>
+      <div class="category-grid">
+        <div class="category-card">
+          <div class="category-img"> skincare </div>
+          <h3>Skincare</h3>
+        </div>
+        <div class="category-card">
+          <div class="category-img"> makeup </div>
+          <h3>Makeup</h3>
+        </div>
+        <div class="category-card">
+          <div class="category-img"> haircare </div>
+          <h3>Haircare</h3>
+        </div>
+        <div class="category-card">
+          <div class="category-img"> bundles </div>
+          <h3>Gift Sets</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="products" id="products">
+    <div class="container">
+      <h2 class="section-title">Our Bestsellers</h2>
+      <div class="product-grid" id="productGrid">
+        <!-- Products will load here via JS -->
+      </div>
+    </div>
+  </section>
+
+  <div class="cart-container" id="cartContainer" style="display: none;">
+    <div class="container">
+      <h2 class="section-title">Your Cart</h2>
+      <div class="cart-items" id="cartItems">
+        <!-- Cart items will load here -->
+      </div>
+      <div class="cart-total" id="cartTotal">Total: $0.00</div>
+      <button class="btn" id="checkoutBtn">Checkout</button>
+    </div>
+  </div>
+
+  <div class="confirmation" id="confirmation" style="display: none;">
+    <div class="container">
+      <h2>Order Confirmed! 🎉</h2>
+      <p>Thank you for your purchase! Your order will be shipped within 24 hours.</p>
+      <p>Order #<span id="orderNumber">123456</span></p>
+      <a href="#" class="btn" id="newOrderBtn">Shop More</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2023 Lumière Cosmetics. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Contact Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Sample products data
+    const products = [
+      { id: 1, name: "Hydrating Serum", price: 29.99, category: "skincare" },
+      { id: 2, name: "Velvet Matte Lipstick", price: 18.50, category: "makeup" },
+      { id: 3, name: "Argan Oil Hair Mask", price: 22.00, category: "haircare" },
+      { id: 4, name: "Glow Kit (3 Products)", price: 49.99, category: "bundles" }
+    ];
+
+    // DOM Elements
+    const productGrid = document.getElementById('productGrid');
+    const cartIcon = document.getElementById('cartIcon');
+    const cartContainer = document.getElementById('cartContainer');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const confirmation = document.getElementById('confirmation');
+    const orderNumber = document.getElementById('orderNumber');
+    const newOrderBtn = document.getElementById('newOrderBtn');
+
+    // Cart state
+    let cart = [];
+
+    // Render products
+    function renderProducts() {
+      productGrid.innerHTML = '';
+      products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.innerHTML = `
+          <div class="product-img">${product.name.split(' ')[0]}</div>
+          <div class="product-info">
+            <h3>${product.name}</h3>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+          </div>
+        `;
+        productGrid.appendChild(productCard);
+      });
+
+      // Add event listeners to "Add to Cart" buttons
+      document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', () => {
+          const productId = parseInt(button.getAttribute('data-id'));
+          addToCart(productId);
+        });
+      });
+    }
+
+    // Add to cart
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      if (product) {
+        cart.push(product);
+        updateCart();
+        alert(`${product.name} added to cart!`);
+      }
+    }
+
+    // Update cart UI
+    function updateCart() {
+      cartItems.innerHTML = '';
+      let total = 0;
+      
+      cart.forEach((item, index) => {
+        total += item.price;
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+          <span>${item.name}</span>
+          <span>$${item.price.toFixed(2)}</span>
+        `;
+        cartItems.appendChild(cartItem);
+      });
+
+      cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+      document.getElementById('cartCount').textContent = cart.length;
+      cartContainer.style.display = cart.length > 0 ? 'block' : 'none';
+    }
+
+    // Checkout
+    function checkout() {
+      cart = [];
+      updateCart();
+      confirmation.style.display = 'block';
+      orderNumber.textContent = Math.floor(100000 + Math.random() * 900000);
+      cartContainer.style.display = 'none';
+    }
+
+    // Event listeners
+    cartIcon.addEventListener('click', () => {
+      cartContainer.style.display = cart.length > 0 ? 'block' : 'none';
+    });
+
+    checkoutBtn.addEventListener('click', checkout);
+    newOrderBtn.addEventListener('click', () => {
+      confirmation.style.display = 'none';
+      cartContainer.style.display = 'block';
+    });
+
+    // Initialize
+    renderProducts();
+  </script>
+</body>
+</html>
+  
